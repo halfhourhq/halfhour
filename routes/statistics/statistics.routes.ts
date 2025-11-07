@@ -56,5 +56,53 @@ statistics.get('/meetings', async c => {
   })
 })
 
+statistics.get('/graphical', async c => {
+  interface Graphical {
+    count: number;
+    day: string;
+  }
+
+  const [upcoming_invites, upcoming_connections] = await db.query<[Graphical[], Graphical[]]>(`
+    SELECT
+        count(id) AS count,
+        time::format(time::floor(start_time, 1d), "%Y-%m-%d") AS day
+    FROM organiser
+    WHERE start_time >= time::floor(time::now(), 1d)
+      AND start_time < time::from::unix(time::unix(time::floor(time::now(), 1d)) + 7 * 86400)
+    GROUP BY day
+    ORDER BY day ASC;
+    SELECT
+        count(id) AS count,
+        time::format(time::floor(in.start_time, 1d), "%Y-%m-%d") AS day
+    FROM connects_with
+    WHERE in.start_time >= time::floor(time::now(), 1d)
+      AND in.start_time < time::from::unix(time::unix(time::floor(time::now(), 1d)) + 7 * 86400)
+    GROUP BY day
+    ORDER BY day ASC;
+  `)
+  
+  const today = new Date();
+  const padded_invites = Array.from({ length: 7 }, (_, i) => {
+    const day = new Date(today);
+    day.setDate(today.getDate() + i);
+    const day_key = day.toISOString().slice(0, 10);
+    const match = upcoming_invites.find(r => r.day.startsWith(day_key));
+    return { day: day_key, count: match?.count ?? 0 };
+  });
+  
+  const padded_connections = Array.from({ length: 7 }, (_, i) => {
+    const day = new Date(today);
+    day.setDate(today.getDate() + i);
+    const day_key = day.toISOString().slice(0, 10);
+    const match = upcoming_connections.find(r => r.day.startsWith(day_key));
+    return { day: day_key, count: match?.count ?? 0 };
+  });
+  
+  console.log(padded_invites)
+  return c.json({
+    invites: padded_invites,
+    meetings: padded_connections
+  })
+})
 
 export default statistics
