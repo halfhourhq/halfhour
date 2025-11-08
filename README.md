@@ -2,7 +2,9 @@
 
 > You deserve privacy
 
-A privacy-focused, ephemeral meeting server built with Deno. HalfHour enables secure, temporary one-on-one connections between meeting organizers and attendees with end-to-end encryption support.
+A privacy-focused, ephemeral meeting server built with Deno. HalfHour enables
+secure, temporary one-on-one connections between meeting organisers and
+attendees with end-to-end encryption support.
 
 ## Features
 
@@ -10,7 +12,8 @@ A privacy-focused, ephemeral meeting server built with Deno. HalfHour enables se
 - **⏱️ Ephemeral Meetings**: Time-bound sessions that automatically clean up
 - **💬 Real-Time Communication**: WebSocket-based chat with typing indicators
 - **📁 File Sharing**: Secure file uploads and downloads with storage limits
-- **🎫 Tag-Based Access**: Meeting tags for organizers, response tags for attendees
+- **🎫 Tag-Based Access**: Meeting tags for organisers, response tags for
+  attendees
 - **🔐 Session Management**: JWT-based authentication with automatic expiration
 - **📊 Statistics**: Built-in analytics for tracking usage
 - **🧹 Auto-Cleanup**: Scheduled tasks to remove expired data
@@ -35,14 +38,17 @@ A privacy-focused, ephemeral meeting server built with Deno. HalfHour enables se
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd halfhour
 ```
 
-2. Create a `.env` file with the required environment variables (see [Configuration](#configuration))
+2. Create a `.env` file with the required environment variables (see
+   [Configuration](#configuration))
 
 3. Run the server:
+
 ```bash
 # Development mode with hot reload
 deno task dev
@@ -56,12 +62,14 @@ deno task start
 Create a `.env` file in the root directory with the following variables:
 
 ### Server Configuration
+
 ```env
 PORT=6002                          # Server port (default: 6002)
 CLIENT_URL=http://localhost:3000   # Allowed CORS origin (your frontend URL)
 ```
 
 ### Database Configuration
+
 ```env
 DB_URL=ws://localhost:8000         # SurrealDB connection URL
 DB_USER=root                       # Database username
@@ -71,6 +79,7 @@ DB_DB=halfhour                     # Database name
 ```
 
 ### Storage Configuration (Backblaze B2)
+
 ```env
 BB_BUCKET_ID=your-bucket-id        # Backblaze B2 bucket ID
 BB_ENDPOINT_API=https://...        # B2 API endpoint
@@ -80,41 +89,49 @@ BB_KEY=your-application-key        # B2 application key
 
 ## API Routes
 
-### Organizer Routes (`/organiser`)
+### Organiser Routes (`/organiser`)
+
 - `POST /organiser` - Create a new meeting
-- `GET /organiser` - Get organizer details and meeting info
+- `GET /organiser` - Get organiser details and meeting info
 - `POST /organiser/auth/start` - Initiate organiser authentication
 - `POST /organiser/auth/finish` - Finish organiser authentication
 
 ### Attendee Routes (`/attendee`)
+
 - `POST /attendee` - Request to join a meeting
 - `GET /attendee` - Get attendee details and meeting status
 - `POST /attendee/auth/start` - Initiate attendee authentication
 - `POST /attendee/auth/finish` - Finish attendee authentication
 
 ### Meeting Routes (`/meeting`)
-- `POST /meeting/connect` - Approve attendee connection (organizer only)
+
+- `POST /meeting/connect` - Approve attendee connection (organiser only)
 - `GET /meeting/connection/:id` - Get meeting connection details
 - `GET /meeting/realtime/:id` - WebSocket endpoint for real-time chat
 
 ### Session Routes (`/session`)
+
 - `GET /session?id=<session_id>` - Validate a session
 - `DELETE /session` - Logout/delete session
 
 ### Storage Routes (`/storage`)
+
 - `GET /storage/connection/:id?file=<file_id>` - Download a file
 - `POST /storage/connection/:id` - Upload a file
 
 ### Statistics Routes (`/statistics`)
+
 - `GET /statistics/jobs` - Get cleanup tasks statuses
 - `GET /statistics/meetings` - Get statistics related to meetings
 - `GET /statistics/graphical` - Get data for plotting graphical statistics
 
 ## WebSocket Protocol
 
-The real-time meeting endpoint (`/meeting/realtime/:id`) uses WebSocket with the following message types:
+The real-time meeting endpoint (`/meeting/realtime/:id`) uses WebSocket with the
+following message types:
 
 ### Client → Server
+
 ```json
 {
   "type": "text",
@@ -144,6 +161,7 @@ The real-time meeting endpoint (`/meeting/realtime/:id`) uses WebSocket with the
 ```
 
 ### Server → Client
+
 ```json
 {
   "type": "text",
@@ -182,7 +200,8 @@ docker run -p 6002:6002 --env-file .env halfhour-server
 ## Database Schema
 
 The server automatically creates and manages the following tables:
-- `organiser` - Meeting organizers
+
+- `organiser` - Meeting organisers
 - `attendee` - Meeting attendees
 - `session` - Authentication sessions
 - `login` - Login records
@@ -195,8 +214,9 @@ The server automatically creates and manages the following tables:
 ## Cleanup Tasks
 
 The server runs scheduled cleanup tasks to remove expired data:
+
 - **clean_attendee**: Removes expired attendee records
-- **clean_organiser**: Removes expired organizer/meeting records
+- **clean_organiser**: Removes expired organiser/meeting records
 - **clean_session**: Removes expired session tokens
 - **clean_file**: Removes orphaned or expired files
 
@@ -224,7 +244,8 @@ deno lint
 
 ## License
 
-This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+This project is licensed under the GNU Affero General Public License v3.0
+(AGPL-3.0).
 
 See the [LICENSE](LICENSE) file for details.
 
@@ -238,7 +259,7 @@ halfhour-server/
 │   └── kv.ts          # Key-value store utilities
 ├── routes/            # API route handlers
 │   ├── attendee/      # Attendee management
-│   ├── organiser/     # Meeting organizer management
+│   ├── organiser/     # Meeting organiser management
 │   ├── meeting/       # Real-time meeting functionality
 │   ├── session/       # Authentication sessions
 │   ├── storage/       # File upload/download
@@ -254,6 +275,7 @@ halfhour-server/
 ## Contributing
 
 Contributions are welcome! Please ensure your code:
+
 - Follows the existing code style
 - Passes linting (`deno lint`)
 - Is properly formatted (`deno fmt`)
@@ -261,4 +283,6 @@ Contributions are welcome! Please ensure your code:
 
 ---
 
-**Note**: This server is designed to work with a compatible frontend client. Make sure to set the `CLIENT_URL` environment variable to your frontend's URL for proper CORS configuration.
+**Note**: This server is designed to work with a compatible frontend client.
+Make sure to set the `CLIENT_URL` environment variable to your frontend's URL
+for proper CORS configuration.
