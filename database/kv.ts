@@ -1,1 +1,1 @@
-export const kv = await Deno.openKv('./database/kv_data/keyvalue.kv')
+export const kv = await Deno.openKv("./database/kv_data/keyvalue.kv");
